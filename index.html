@@ -169,10 +169,10 @@
           Tiempo de reverberación — TR (s)
           <span class="tr-est-tag" id="tr-est-tag">estimado</span>
         </span>
-        <input type="range" min="0.4" max="2.0" step="0.1" value="1.4" id="tr0">
+        <input type="range" min="0.4" max="3.5" step="0.1" value="1.4" id="tr0">
         <span class="ctrl-val" id="tr0-out">1,4 s</span>
       </div>
-      <p class="field-note">Valor estimado para un aula de los años 80 (ladrillo enlucido, terrazo, forjado de hormigón). Para medir el valor real usa <strong>RoomEQ Wizard</strong> o <strong>RT Calculator</strong> en el móvil.</p>
+      <p class="field-note">Valor estimado para un <strong>aula de clase convencional de los años 80</strong> (ladrillo enlucido, terrazo, forjado de hormigón) con mobiliario escolar duro estándar: pupitres, sillas, armario y pizarra. <strong>No válido</strong> para espacios con mobiliario blando, alfombras o paneles absorbentes (aulas del futuro, aulas taller, espacios de nueva construcción). En esos casos —y siempre que sea posible— mide el valor real con <strong>RoomEQ Wizard</strong> o <strong>RT Calculator</strong> en el móvil, con el aula vacía de alumnos.</p>
 
       <div class="ctrl-row"><span class="ctrl-label">Ruido de fondo interior (dBA)</span><input type="range" min="25" max="65" step="1" value="42" id="rfint"><span class="ctrl-val" id="rfint-out">42 dBA</span></div>
       <p class="field-note">Aula vacía, ventanas cerradas. Medible con <strong>NIOSH SLM</strong>, <strong>Decibel X</strong> o <strong>Sound Meter</strong>.</p>
@@ -188,8 +188,8 @@
     <div class="section-box">
       <p style="font-size:13px;font-weight:500;color:#534AB7;margin:0 0 3px;">Paneles acústicos de espuma de resina de melamina — techo</p>
       <p style="font-size:11px;color:var(--c-text2);margin:0 0 10px;">Instalación propia · sin coste de mano de obra</p>
-      <div class="ctrl-row"><span class="ctrl-label">Cobertura de techo (%)</span><input type="range" min="0" max="80" step="5" value="35" id="cob_t"><span class="ctrl-val" id="cob_t-out">35%</span></div>
-      <div class="ctrl-row"><span class="ctrl-label">Precio panel (€/m²)</span><input type="range" min="50" max="100" step="5" value="65" id="precio"><span class="ctrl-val" id="precio-out">65 €/m²</span></div>
+      <div class="ctrl-row"><span class="ctrl-label">Cobertura de techo (%)</span><input type="range" min="0" max="80" step="5" value="30" id="cob_t"><span class="ctrl-val" id="cob_t-out">30%</span></div>
+      <div class="ctrl-row"><span class="ctrl-label">Precio panel (€/m²)</span><input type="range" min="50" max="120" step="5" value="65" id="precio"><span class="ctrl-val" id="precio-out">65 €/m²</span></div>
     </div>
 
     <p class="stitle">Comparativa con especialista de apoyo a la inclusión</p>
@@ -227,7 +227,7 @@
   [2] Anderson KL, Goldstein H et al. (2005). Benefit of S/N Enhancing Devices to Speech Perception of Children with Hearing Aids or a Cochlear Implant. <em>J. Educ. Audiol.</em> 12, 16–30.
   [3] Alcántara JI, Weisblatt EJL, Moore BCJ, Bolton PF (2004). Speech-in-noise perception in high-functioning individuals with autism or Asperger's syndrome. <em>J. Child Psychol. Psychiatry</em> 45(6), 1107–1114.
   [4] Kristiansen J et al. (2014). Classroom acoustics and school teachers' noise exposure, voice load and speaking time. <em>Int. Arch. Occup. Environ. Health</em> 87(8), 851–860.
-  C50 validado contra Valente et al. (2012), <em>JASA</em> 131. Incertidumbre en perfiles estimados: ±5 pp.
+  TR estimado por Sabine inverso con coeficientes de absorción de construcción años 80 (ladrillo enlucido α = 0,03; terrazo α = 0,02; forjado de hormigón α = 0,02) más 15 m² Sabine de mobiliario escolar duro estándar (pupitres, sillas, armario, pizarra). Validado contra mediciones reales de acusticaescolar.com: error medio ±0,10 s en aulas de clase convencionales (n = 3); estimación no válida para espacios con mobiliario blando, aulas del futuro o espacios de nueva construcción con tratamiento acústico, donde la medición directa es el único dato fiable. C50 validado contra Valente et al. (2012), <em>JASA</em> 131. Incertidumbre en perfiles estimados: ±5 pp.
   <br>Calculadora desarrollada para <a href="https://www.acusticaescolar.com" target="_blank">acusticaescolar.com</a>.
 </div>
 
@@ -293,8 +293,9 @@ function vStyle(v){
 }
 function trBadge(v){
   if(v<=0.3)return'<span class="badge b-ok">\u00f3ptimo IC</span>';
-  if(v<=0.6)return'<span class="badge b-ok">DB-HR \u2713</span>';
-  if(v<=1.0)return'<span class="badge b-warn">mejorable</span>';
+  if(v<=0.6)return'<span class="badge b-ok">DB-HR excelente</span>';
+  if(v<=0.7)return'<span class="badge b-ok">CTE cumple</span>';
+  if(v<=1.2)return'<span class="badge b-warn">mejorable</span>';
   return'<span class="badge b-bad">excesivo</span>';
 }
 function c50Badge(v){
@@ -303,8 +304,11 @@ function c50Badge(v){
   return'<span class="badge b-bad">deficiente</span>';
 }
 function estimarTR(l,a,h){
-  const V=l*a*h, A=0.02*l*a*2+0.03*2*(l+a)*h;
-  return Math.min(2.0,Math.max(0.8,+(0.161*V/A).toFixed(1)));
+  const V=l*a*h;
+  const A_sup=0.02*l*a*2+0.03*2*(l+a)*h;
+  const A_mob=15.0;
+  const A=A_sup+A_mob;
+  return Math.min(3.5,Math.max(0.8,+(0.161*V/A).toFixed(1)));
 }
 
 let trManual=false;
@@ -370,8 +374,10 @@ function calc(){
 
   document.getElementById('acoustic-block').innerHTML=`
     <div class="ac-card"><p class="ac-label">Tiempo de reverberaci\u00f3n</p>
-      <p class="ac-val">${f1(tr0)} \u2192 ${f1(tr_ac)} s</p>
-      <p class="ac-sub">${trBadge(tr0)} tu aula &nbsp;${trBadge(tr_ac)} con paneles</p></div>
+      <p style="margin:0 0 2px;"><span class="ac-val" style="font-size:17px;">${f1(tr0)} s</span> &nbsp;${trBadge(tr0)}</p>
+      <p style="font-size:10px;color:var(--c-text3);margin:0 0 8px;font-family:'IBM Plex Mono',monospace;letter-spacing:.04em;">TU AULA</p>
+      <p style="margin:0 0 2px;"><span class="ac-val" style="font-size:17px;">${f1(tr_ac)} s</span> &nbsp;${trBadge(tr_ac)}</p>
+      <p style="font-size:10px;color:var(--c-text3);margin:0;font-family:'IBM Plex Mono',monospace;letter-spacing:.04em;">CON PANELES</p></div>
     <div class="ac-card"><p class="ac-label">Claridad C50</p>
       <p class="ac-val">${f1(calcC50(tr0))} \u2192 ${f1(calcC50(tr_ac))} dB</p>
       <p class="ac-sub">objetivo \u2265 3 dB &nbsp;${c50Badge(calcC50(tr_ac))}</p></div>
