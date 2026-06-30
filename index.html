@@ -144,6 +144,13 @@
     font-size:10px; background:var(--c-amber-bg); color:#854F0B;
     border-radius:var(--radius-sm); padding:2px 6px; margin-left:6px; font-weight:500;
   }
+  .tr-recalc-tag {
+    font-size:10px; background:#E3EDF7; color:#1A4A7A;
+    border-radius:4px; padding:2px 6px; margin-left:6px; font-weight:500;
+    cursor:pointer; border:none; vertical-align:middle;
+    font-family:'IBM Plex Mono',monospace;
+  }
+  .tr-recalc-tag:hover { background:#D5E5F5; }
 
   /* Nota al pie */
   .nota-pie {
@@ -167,7 +174,7 @@
       <div class="ctrl-row">
         <span class="ctrl-label">
           Tiempo de reverberación — TR (s)
-          <span class="tr-est-tag" id="tr-est-tag">estimado</span>
+          <span class="tr-est-tag" id="tr-est-tag">estimado</span><button type="button" class="tr-recalc-tag" id="tr-recalc-btn" style="display:none;" title="Volver a vincular el TR a las dimensiones del aula">↻ volver al cálculo estimado</button>
         </span>
         <input type="range" min="0.4" max="3.5" step="0.1" value="1.4" id="tr0">
         <span class="ctrl-val" id="tr0-out">1,4 s</span>
@@ -224,7 +231,7 @@
 <div class="nota-pie">
   <strong>Fuentes:</strong>
   [1] Finitzo-Hieber T &amp; Tillman TW (1978). Room acoustics effects on monosyllabic word discrimination ability for normal and hearing-impaired children. <em>J. Speech Hear. Res.</em> 21(3), 440–458.
-  [2] Anderson KL, Goldstein H et al. (2005). Benefit of S/N Enhancing Devices to Speech Perception of Children with Hearing Aids or a Cochlear Implant. <em>J. Educ. Audiol.</em> 12, 16–30.
+  [2] Anderson KL, Goldstein H, Colodzin L &amp; Iglehart F (2005). Benefit of S/N Enhancing Devices to Speech Perception of Children Listening in a Typical Classroom with Hearing Aids or a Cochlear Implant. <em>J. Educ. Audiol.</em> 12, 14–28.
   [3] Alcántara JI, Weisblatt EJL, Moore BCJ, Bolton PF (2004). Speech-in-noise perception in high-functioning individuals with autism or Asperger's syndrome. <em>J. Child Psychol. Psychiatry</em> 45(6), 1107–1114.
   [4] Kristiansen J et al. (2014). Classroom acoustics and school teachers' noise exposure, voice load and speaking time. <em>Int. Arch. Occup. Environ. Health</em> 87(8), 851–860.
   TR estimado por Sabine inverso con coeficientes de absorción de construcción años 80 (ladrillo enlucido α = 0,03; terrazo α = 0,02; forjado de hormigón α = 0,02) más 15 m² Sabine de mobiliario escolar duro estándar (pupitres, sillas, armario, pizarra). Validado contra mediciones reales de acusticaescolar.com: error medio ±0,10 s en aulas de clase convencionales (n = 3); estimación no válida para espacios con mobiliario blando, aulas del futuro o espacios de nueva construcción con tratamiento acústico, donde la medición directa es el único dato fiable. C50 validado contra Valente et al. (2012), <em>JASA</em> 131. Incertidumbre en perfiles estimados: ±5 pp.
@@ -268,7 +275,7 @@ function calcRF(rfInt,r0,A0,dA){
   const lp_rev=lp+10*Math.log10(A0/(A0+dA));
   return 10*Math.log10(Math.pow(10,rfInt/10)+Math.pow(10,lp_rev/10));
 }
-const K=0.65,V0=60,R0=35;
+const K=0.65,V0=58,R0=45; // Lombard recalibrado: V0=voz en silencio, R0=umbral inicio Lombard (Pearsons et al. 1977: 48dBA)
 function calcVoz(rf){ return V0+K*Math.max(0,rf-R0); }
 function snrDe(rf){ const v=calcVoz(rf); return Math.min(15,Math.max(0,v-rf)); }
 
@@ -318,11 +325,18 @@ function syncTR(){
   document.getElementById('tr0').value=t;
   document.getElementById('tr0-out').textContent=f1(t)+' s';
   document.getElementById('tr-est-tag').style.display='';
+  document.getElementById('tr-recalc-btn').style.display='none';
 }
 document.getElementById('tr0').addEventListener('input',function(){
   trManual=true;
   document.getElementById('tr-est-tag').style.display='none';
+  document.getElementById('tr-recalc-btn').style.display='inline-block';
   document.getElementById('tr0-out').textContent=f1(+this.value)+' s';
+  calc();
+});
+document.getElementById('tr-recalc-btn').addEventListener('click',function(){
+  trManual=false;
+  syncTR();
   calc();
 });
 ['largo','ancho','alto'].forEach(id=>document.getElementById(id).addEventListener('input',function(){syncTR();calc();}));
