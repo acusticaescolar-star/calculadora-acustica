@@ -199,13 +199,6 @@
       <div class="ctrl-row"><span class="ctrl-label">Precio panel (€/m²)</span><input type="range" min="50" max="120" step="5" value="65" id="precio"><span class="ctrl-val" id="precio-out">65 €/m²</span></div>
     </div>
 
-    <p class="stitle">Comparativa con especialista de apoyo a la inclusión</p>
-    <div class="section-box">
-      <p style="font-size:11px;color:var(--c-text2);margin:0 0 10px;">PT, AL u orientador · coste anual por plaza en el centro</p>
-      <div class="ctrl-row"><span class="ctrl-label">Coste especialista/año (€)</span><input type="range" min="28000" max="55000" step="1000" value="38000" id="costesp"><span class="ctrl-val" id="costesp-out">38.000 €</span></div>
-      <div class="ctrl-row"><span class="ctrl-label">Nº especialistas necesarios</span><input type="range" min="1" max="6" step="1" value="2" id="nesp"><span class="ctrl-val" id="nesp-out">2</span></div>
-      <div class="ctrl-row"><span class="ctrl-label">Nº aulas del centro</span><input type="range" min="6" max="40" step="1" value="18" id="naulas"><span class="ctrl-val" id="naulas-out">18</span></div>
-    </div>
   </div>
 </div>
 
@@ -225,15 +218,26 @@
 </div>
 
 <hr class="sep">
+<div class="section-box" style="margin-bottom:0;">
+  <p class="stitle" style="margin-top:0;">Comparativa con especialista de apoyo a la inclusión</p>
+      <p style="font-size:11px;color:var(--c-text2);margin:0 0 10px;">PT, AL u orientador · coste anual por plaza en el centro</p>
+      <div class="ctrl-row"><span class="ctrl-label">Coste especialista/año (€)</span><input type="range" min="28000" max="55000" step="1000" value="38000" id="costesp"><span class="ctrl-val" id="costesp-out">38.000 €</span></div>
+      <div class="ctrl-row"><span class="ctrl-label">Nº especialistas necesarios</span><input type="range" min="1" max="6" step="1" value="2" id="nesp"><span class="ctrl-val" id="nesp-out">2</span></div>
+      <div class="ctrl-row"><span class="ctrl-label">Nº aulas del centro</span><input type="range" min="6" max="40" step="1" value="18" id="naulas"><span class="ctrl-val" id="naulas-out">18</span></div>
+</div>
+
+<hr class="sep">
 <p class="stitle">Comparativa económica — nivel de centro</p>
 <div class="eco-grid" id="eco-block"></div>
 
 <div class="nota-pie">
   <strong>Fuentes:</strong>
-  [1] Finitzo-Hieber T &amp; Tillman TW (1978). Room acoustics effects on monosyllabic word discrimination ability for normal and hearing-impaired children. <em>J. Speech Hear. Res.</em> 21(3), 440–458.
+  [1] Alcántara JI, Weisblatt EJL, Moore BCJ, Bolton PF (2004). Speech-in-noise perception in high-functioning individuals with autism or Asperger's syndrome. <em>J. Child Psychol. Psychiatry</em> 45(6), 1107–1114.
   [2] Anderson KL, Goldstein H, Colodzin L &amp; Iglehart F (2005). Benefit of S/N Enhancing Devices to Speech Perception of Children Listening in a Typical Classroom with Hearing Aids or a Cochlear Implant. <em>J. Educ. Audiol.</em> 12, 14–28.
-  [3] Alcántara JI, Weisblatt EJL, Moore BCJ, Bolton PF (2004). Speech-in-noise perception in high-functioning individuals with autism or Asperger's syndrome. <em>J. Child Psychol. Psychiatry</em> 45(6), 1107–1114.
+  [3] Finitzo-Hieber T &amp; Tillman TW (1978). Room acoustics effects on monosyllabic word discrimination ability for normal and hearing-impaired children. <em>J. Speech Hear. Res.</em> 21(3), 440–458.
   [4] Kristiansen J et al. (2014). Classroom acoustics and school teachers' noise exposure, voice load and speaking time. <em>Int. Arch. Occup. Environ. Health</em> 87(8), 851–860.
+  [5] Tiesler G &amp; Oberdörster M (2006). Acoustic ergonomics in schools. <em>Proceedings of Euronoise 2006</em>, Tampere, Finland. — estudio Universidad de Bremen/Ecophon: relación directa entre nivel de ruido de fondo (babble emitido por altavoz a nivel variable) y pulso del docente monitorizado en tiempo real; contraste medio de 10 bpm entre aula mal y bien acondicionada.
+  [6] Tiesler G (2018). Communication Behaviour and Workload of Students and Teachers in Highly Absorbent Classrooms. <em>Proceedings of Euronoise</em>.
   TR estimado por Sabine inverso con coeficientes de absorción de construcción años 80 (ladrillo enlucido α = 0,03; terrazo α = 0,02; forjado de hormigón α = 0,02) más 15 m² Sabine de mobiliario escolar duro estándar (pupitres, sillas, armario, pizarra). Validado contra mediciones reales de acusticaescolar.com: error medio ±0,10 s en aulas de clase convencionales (n = 3); estimación no válida para espacios con mobiliario blando, aulas del futuro o espacios de nueva construcción con tratamiento acústico, donde la medición directa es el único dato fiable. C50 validado contra Valente et al. (2012), <em>JASA</em> 131. Incertidumbre en perfiles estimados: ±5 pp.
   <br>Calculadora desarrollada para <a href="https://www.acusticaescolar.com" target="_blank">acusticaescolar.com</a>.
 </div>
@@ -451,6 +455,8 @@ function calc(){
       <span style="font-size:11px;margin-left:4px;" class="${dvoz<=-0.5?'delta-good':'delta-neutral'}">${dvoz>=0?'+':''}${f1(dvoz)} dB</span>
       ${dvoz<=-0.5?'<br>'+logNote(dvoz):''}</td>
     <td style="color:#888780;font-size:11px;">&lt; 65 dBA</td></tr>`;
+
+
   t+='</tbody>';
   document.getElementById('main-table').innerHTML=t;
 
