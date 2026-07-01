@@ -193,10 +193,24 @@
   <div>
     <p class="stitle" style="margin-top:0;">Intervención acústica</p>
     <div class="section-box">
-      <p style="font-size:13px;font-weight:500;color:#534AB7;margin:0 0 3px;">Paneles acústicos de espuma de resina de melamina — techo</p>
+      <p style="font-size:13px;font-weight:500;color:#534AB7;margin:0 0 6px;">Paneles acústicos — techo</p>
       <p style="font-size:11px;color:var(--c-text2);margin:0 0 10px;">Instalación propia · sin coste de mano de obra</p>
+      <div class="ctrl-row">
+        <span class="ctrl-label">Material del panel</span>
+        <select id="material" style="flex:1;font-size:13px;padding:3px 6px;border:1px solid var(--c-border);border-radius:4px;background:var(--c-bg);color:var(--c-text);cursor:pointer;">
+          <option value="melamina">Espuma de melamina (Velvet RE, Basotect…)</option>
+          <option value="lana" selected>Lana de vidrio clase A (Ecophon Master SQ…)</option>
+        </select>
+      </div>
+      <p id="mat-nota" style="font-size:10px;color:var(--c-text3);margin:0 0 10px;line-height:1.5;border-left:2px solid var(--c-border);padding-left:7px;">
+        Coeficiente de absorción (banda 500–1000 Hz): <strong id="mat-alpha">α = 0,85</strong> · Autoinstalable con adhesivo · No removible · Reacción al fuego: <span style="font-size:9px;background:#E1F5EE;color:#085041;border-radius:3px;padding:1px 6px;font-weight:600;vertical-align:middle;">A2-s1,d0</span>
+      </p>
       <div class="ctrl-row"><span class="ctrl-label">Cobertura de techo (%)</span><input type="range" min="0" max="80" step="5" value="30" id="cob_t"><span class="ctrl-val" id="cob_t-out">30%</span></div>
-      <div class="ctrl-row"><span class="ctrl-label">Precio panel (€/m²)</span><input type="range" min="50" max="120" step="5" value="65" id="precio"><span class="ctrl-val" id="precio-out">65 €/m²</span></div>
+      <div class="ctrl-row"><span class="ctrl-label">Precio panel (€/m²)</span><input type="range" min="50" max="120" step="5" value="80" id="precio"><span class="ctrl-val" id="precio-out">80 €/m²</span></div>
+      <div style="margin-top:6px;padding:6px 10px;background:var(--c-bg);border:1px solid var(--c-border-light);border-radius:var(--radius-sm);font-size:12px;display:flex;justify-content:space-between;align-items:center;">
+        <span style="color:var(--c-text3);">Coste tratamiento esta aula</span>
+        <span id="coste-aula-out" style="font-weight:600;color:#085041;">—</span>
+      </div>
     </div>
 
   </div>
@@ -231,15 +245,37 @@
 <div class="eco-grid" id="eco-block"></div>
 
 <div class="nota-pie">
-  <strong>Fuentes:</strong>
-  [1] Alcántara JI, Weisblatt EJL, Moore BCJ, Bolton PF (2004). Speech-in-noise perception in high-functioning individuals with autism or Asperger's syndrome. <em>J. Child Psychol. Psychiatry</em> 45(6), 1107–1114.
-  [2] Anderson KL, Goldstein H, Colodzin L &amp; Iglehart F (2005). Benefit of S/N Enhancing Devices to Speech Perception of Children Listening in a Typical Classroom with Hearing Aids or a Cochlear Implant. <em>J. Educ. Audiol.</em> 12, 14–28.
-  [3] Finitzo-Hieber T &amp; Tillman TW (1978). Room acoustics effects on monosyllabic word discrimination ability for normal and hearing-impaired children. <em>J. Speech Hear. Res.</em> 21(3), 440–458.
-  [4] Kristiansen J et al. (2014). Classroom acoustics and school teachers' noise exposure, voice load and speaking time. <em>Int. Arch. Occup. Environ. Health</em> 87(8), 851–860.
-  [5] Tiesler G &amp; Oberdörster M (2006). Acoustic ergonomics in schools. <em>Proceedings of Euronoise 2006</em>, Tampere, Finland. — estudio Universidad de Bremen/Ecophon: relación directa entre nivel de ruido de fondo (babble emitido por altavoz a nivel variable) y pulso del docente monitorizado en tiempo real; contraste medio de 10 bpm entre aula mal y bien acondicionada.
-  [6] Tiesler G (2018). Communication Behaviour and Workload of Students and Teachers in Highly Absorbent Classrooms. <em>Proceedings of Euronoise</em>.
-  TR estimado por Sabine inverso con coeficientes de absorción de construcción años 80 (ladrillo enlucido α = 0,03; terrazo α = 0,02; forjado de hormigón α = 0,02) más 15 m² Sabine de mobiliario escolar duro estándar (pupitres, sillas, armario, pizarra). Validado contra mediciones reales de acusticaescolar.com: error medio ±0,10 s en aulas de clase convencionales (n = 3); estimación no válida para espacios con mobiliario blando, aulas del futuro o espacios de nueva construcción con tratamiento acústico, donde la medición directa es el único dato fiable. C50 validado contra Valente et al. (2012), <em>JASA</em> 131. Incertidumbre en perfiles estimados: ±5 pp.
-  <br>Calculadora desarrollada para <a href="https://www.acusticaescolar.com" target="_blank">acusticaescolar.com</a>.
+  <strong>Fuentes bibliográficas</strong>
+  <ol style="margin:6px 0 10px;padding-left:18px;list-style:none;">
+    <li style="counter-increment:ref;margin-bottom:5px;padding-left:28px;position:relative;">
+      <span style="position:absolute;left:0;font-weight:600;">[1]</span>
+      Alcántara JI, Weisblatt EJL, Moore BCJ &amp; Bolton PF (2004). Speech-in-noise perception in high-functioning individuals with autism or Asperger's syndrome. <em>J. Child Psychol. Psychiatry</em> 45(6), 1107–1114.
+    </li>
+    <li style="margin-bottom:5px;padding-left:28px;position:relative;">
+      <span style="position:absolute;left:0;font-weight:600;">[2]</span>
+      Anderson KL, Goldstein H, Colodzin L &amp; Iglehart F (2005). Benefit of S/N Enhancing Devices to Speech Perception of Children Listening in a Typical Classroom with Hearing Aids or a Cochlear Implant. <em>J. Educ. Audiol.</em> 12, 14–28.
+    </li>
+    <li style="margin-bottom:5px;padding-left:28px;position:relative;">
+      <span style="position:absolute;left:0;font-weight:600;">[3]</span>
+      Finitzo-Hieber T &amp; Tillman TW (1978). Room acoustics effects on monosyllabic word discrimination ability for normal and hearing-impaired children. <em>J. Speech Hear. Res.</em> 21(3), 440–458.
+    </li>
+    <li style="margin-bottom:5px;padding-left:28px;position:relative;">
+      <span style="position:absolute;left:0;font-weight:600;">[4]</span>
+      Kristiansen J, Lund SP, Persson R, Shibuya H, Nielsen PM &amp; Scholz M (2014). Classroom acoustics and school teachers' noise exposure, voice load and speaking time. <em>Int. Arch. Occup. Environ. Health</em> 87(8), 851–860.
+    </li>
+    <li style="margin-bottom:5px;padding-left:28px;position:relative;">
+      <span style="position:absolute;left:0;font-weight:600;">[5]</span>
+      Tiesler G &amp; Oberdörster M (2006). Acoustic ergonomics in schools. <em>Proceedings of Euronoise 2006</em>, Tampere, Finland. <span style="color:#888780;">— relación directa entre nivel de ruido de fondo y pulso del docente; contraste medio de 10 bpm entre aula mal y bien acondicionada.</span>
+    </li>
+    <li style="margin-bottom:5px;padding-left:28px;position:relative;">
+      <span style="position:absolute;left:0;font-weight:600;">[6]</span>
+      Tiesler G (2018). Communication Behaviour and Workload of Students and Teachers in Highly Absorbent Classrooms. <em>Proceedings of Euronoise</em>.
+    </li>
+  </ol>
+  <strong>Nota metodológica</strong>
+  <p style="margin:4px 0 6px;">TR estimado por Sabine inverso con coeficientes de absorción de construcción años 80 (ladrillo enlucido α=0,03; terrazo α=0,02; forjado de hormigón α=0,02) más 15 m² Sabine de mobiliario escolar duro estándar. Validado contra mediciones reales de acusticaescolar.com: error medio ±0,10 s en aulas de clase convencionales (n=3). No válido para espacios con mobiliario blando, aulas del futuro o nueva construcción tratada acústicamente. C50 validado contra Valente et al. (2012), <em>JASA</em> 131. Incertidumbre en perfiles estimados: ±5 pp.</p>
+  Calculadora desarrollada para <a href="https://www.acusticaescolar.com" target="_blank">acusticaescolar.com</a> ·
+  <a href="https://github.com/acusticaescolar-star/calculadora-acustica/blob/main/calculadora-acustica-documentacion-tecnica-julio26.pdf" target="_blank">Documentación técnica del modelo (PDF)</a>
 </div>
 
 <script>
@@ -273,13 +309,53 @@ function interpFH(perfil,tr,snr){
 function wrs_tea(tr,snr){ return interpFH('normal',tr,Math.max(0,snr-2.5)); }
 
 function calcC50(tr){ if(tr<=0)return 15; return 10*Math.log10(Math.max(Math.exp(0.693/tr)-1,0.001)); }
-function trConPaneles(tr0,V,S,c){ return 0.161*V/(0.161*V/tr0+S*c*0.9); }
+function trConPaneles(tr0,V,S,c,alpha){ return 0.161*V/(0.161*V/tr0+S*c*alpha); }
 function calcRF(rfInt,r0,A0,dA){
   const lp=35+10*Math.log10(Math.max(r0,1));
   const lp_rev=lp+10*Math.log10(A0/(A0+dA));
   return 10*Math.log10(Math.pow(10,rfInt/10)+Math.pow(10,lp_rev/10));
 }
 const K=0.65,V0=58,R0=45; // Lombard recalibrado: V0=voz en silencio, R0=umbral inicio Lombard (Pearsons et al. 1977: 48dBA)
+
+// ── Materiales verificados ──────────────────────────────────────────
+// Coeficientes de absorción promedio en banda 500–1000 Hz (zona vocal principal)
+// basados en datos ISO 354 de los fabricantes y comparativa de mercado julio 2026
+const MATERIALES = {
+  melamina: {
+    label: 'Espuma de melamina (Velvet RE, Basotect\u2026)',
+    alpha: 0.65,          // Basotect flocado 40-45mm, promedio 500-1000 Hz, pegado directo
+    precio_min: 50, precio_ini: 60, precio_max: 120,
+    nota: 'Coeficiente de absorci\u00f3n (banda 500\u20131000\u00a0Hz): \u03b1\u00a0=\u00a00,65 \u00b7 Autoinstalable con adhesivo \u00b7 No removible \u00b7 Reacci\u00f3n al fuego: <span style=\'font-size:9px;background:#FAEEDA;color:#854F0B;border-radius:3px;padding:1px 6px;font-weight:600;vertical-align:middle;\'>B-s1,d0</span>',
+  },
+  lana: {
+    label: 'Lana de vidrio clase A (Ecophon Master SQ\u2026)',
+    alpha: 0.85,          // Lana de vidrio 40mm clase A, pegado directo sin plenum
+    precio_min: 65, precio_ini: 80, precio_max: 110,
+    nota: 'Coeficiente de absorci\u00f3n (banda 500\u20131000\u00a0Hz): \u03b1\u00a0=\u00a00,85 \u00b7 Autoinstalable con adhesivo \u00b7 No removible \u00b7 Reacci\u00f3n al fuego: <span style=\'font-size:9px;background:#E1F5EE;color:#085041;border-radius:3px;padding:1px 6px;font-weight:600;vertical-align:middle;\'>A2-s1,d0</span>',
+  },
+};
+let alphaPanel = MATERIALES.lana.alpha; // valor activo, actualizado al cambiar selector
+
+function syncMaterial() {
+  const id = document.getElementById('material').value;
+  const m = MATERIALES[id];
+  alphaPanel = m.alpha;
+  document.getElementById('mat-nota').innerHTML =
+    'Coeficiente de absorci\u00f3n (banda 500\u20131000\u00a0Hz): <strong id="mat-alpha">\u03b1\u00a0=\u00a0' +
+    m.alpha.toFixed(2).replace('.',',') + '</strong> \u00b7 ' +
+    m.nota.split('\u00b7').slice(1).join('\u00b7');
+  const slider = document.getElementById('precio');
+  slider.min   = m.precio_min;
+  slider.max   = m.precio_max;
+  slider.step  = 5;
+  slider.value = m.precio_ini;
+  document.getElementById('precio-out').textContent = m.precio_ini + ' \u20ac/m\u00b2';
+  document.getElementById('cob_t').value = 30;
+  document.getElementById('cob_t-out').textContent = '30%';
+  calc();
+}
+document.getElementById('material').addEventListener('change', syncMaterial);
+
 function calcVoz(rf){ return V0+K*Math.max(0,rf-R0); }
 function snrDe(rf){ const v=calcVoz(rf); return Math.min(15,Math.max(0,v-rf)); }
 
@@ -359,8 +435,8 @@ function calc(){
   const naulas=+document.getElementById('naulas').value;
 
   const V=largo*ancho*alto, S_t=largo*ancho;
-  const A0=0.161*V/tr0, dA_ac=S_t*cob_t*0.9;
-  const tr_ac=trConPaneles(tr0,V,S_t,cob_t);
+  const A0=0.161*V/tr0, dA_ac=S_t*cob_t*alphaPanel;
+  const tr_ac=trConPaneles(tr0,V,S_t,cob_t,alphaPanel);
 
   document.getElementById('largo-out').textContent=f1(largo)+' m';
   document.getElementById('ancho-out').textContent=f1(ancho)+' m';
@@ -375,7 +451,9 @@ function calc(){
   document.getElementById('geom-info').innerHTML=`<span class="info-pill">V\u00a0=\u00a0${f1(V)}\u00a0m\u00b3\u00a0\u00b7\u00a0techo\u00a0${f1(S_t)}\u00a0m\u00b2</span>`;
 
   const m2_t=S_t*cob_t;
-  const coste_ac=m2_t*precio*naulas;
+  const coste_aula=m2_t*precio;
+  const coste_ac=coste_aula*naulas;
+  document.getElementById('coste-aula-out').textContent = coste_aula>0 ? fmt(rnd(coste_aula))+' \u20ac' : '\u2014';
   const cesp_y1=nesp*costesp;
   const cesp_20=Array.from({length:20},(_,i)=>cesp_y1*Math.pow(1.02,i)).reduce((a,b)=>a+b,0);
   const multipl=cesp_20>0&&coste_ac>0?(cesp_20/coste_ac).toFixed(1):'—';
@@ -419,7 +497,7 @@ function calc(){
   let t=`<thead><tr>
     <th>Perfil</th>
     <th style="color:#888780;">Sin tratamiento</th>
-    <th style="color:#534AB7;">Con paneles en techo<br><span style="font-weight:400;font-size:10px;">${rnd(cob_t*100)}% cobertura</span></th>
+    <th style="color:#534AB7;">Con paneles en techo<br><span style="font-weight:400;font-size:10px;">${rnd(cob_t*100)}% cobertura · \u03b1\u00a0${alphaPanel.toFixed(2).replace('.',',')}</span></th>
     <th>Umbral funcional</th>
   </tr></thead><tbody>`;
 
@@ -479,6 +557,7 @@ function calc(){
 }
 
 ['rfint','r0','cob_t','precio','costesp','nesp','naulas'].forEach(id=>document.getElementById(id).addEventListener('input',calc));
+syncMaterial();
 syncTR();
 calc();
 </script>
