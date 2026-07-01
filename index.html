@@ -271,6 +271,14 @@
       <span style="position:absolute;left:0;font-weight:600;">[6]</span>
       Tiesler G (2018). Communication Behaviour and Workload of Students and Teachers in Highly Absorbent Classrooms. <em>Proceedings of Euronoise</em>.
     </li>
+    <li style="margin-bottom:5px;padding-left:28px;position:relative;">
+      <span style="position:absolute;left:0;font-weight:600;">[7]</span>
+      Iglehart F (2016). Speech perception in classroom acoustics by children with cochlear implants and with typical hearing. <em>Am. J. Audiol.</em> 25(2), 100–109. — IC modernos en TR 0,3–0,9 s; SNR-50 = +9,7 dB a TR=0,3 s.
+    </li>
+    <li style="margin-bottom:5px;padding-left:28px;position:relative;">
+      <span style="position:absolute;left:0;font-weight:600;">[8]</span>
+      Iglehart F (2020). Speech perception in classroom acoustics by children with hearing loss and wearing hearing aids. <em>Am. J. Audiol.</em> 29(1), 6–17. — audífonos digitales modernos en TR 0,3–0,9 s; SNR-50 = +4,76 dB a TR=0,3 s.
+    </li>
   </ol>
   <strong>Nota metodológica</strong>
   <p style="margin:4px 0 6px;">TR estimado por Sabine inverso con coeficientes de absorción de construcción años 80 (ladrillo enlucido α=0,03; terrazo α=0,02; forjado de hormigón α=0,02) más 15 m² Sabine de mobiliario escolar duro estándar. Validado contra mediciones reales de acusticaescolar.com: error medio ±0,10 s en aulas de clase convencionales (n=3). No válido para espacios con mobiliario blando, aulas del futuro o nueva construcción tratada acústicamente. C50 validado contra Valente et al. (2012), <em>JASA</em> 131. Incertidumbre en perfiles estimados: ±5 pp.</p>
@@ -494,6 +502,22 @@ function calc(){
      src:'Anderson, Goldstein et al. (2005) \u2014 correci\u00f3n HINT\u2192monosil\u00e1bicas \u221218 pp'},
   ];
 
+
+  // Notas Iglehart: aparecen cuando TR_ac ≤ 0,9 s (rango de datos con dispositivos modernos).
+  // Se expresan en términos de TR, que es la variable visible para el docente.
+  const igNota_hipo = tr_ac<=0.9
+    ? `<div style="font-size:9.5px;color:#1E6458;margin-top:3px;line-height:1.4;border-left:2px solid #1E6458;padding-left:5px;">` +
+      `Valor conservador (audífono analógico, 1978). ` +
+      `Los audífonos digitales actuales mejoran significativamente con cada reducci\u00f3n de TR. ` +
+      `<span style="color:#888780;">Iglehart (2020)</span></div>`
+    : '';
+  const igNota_ic = tr_ac<=0.9
+    ? `<div style="font-size:9.5px;color:#1E6458;margin-top:3px;line-height:1.4;border-left:2px solid #1E6458;padding-left:5px;">` +
+      `Valor conservador (IC anal\u00f3gico, 1978). ` +
+      `Los IC modernos mejoran significativamente al reducir el TR; con TR\u202f\u2264\u202f0,3\u202fs alcanzan \u226580\u202f% en frases. ` +
+      `<span style="color:#888780;">Iglehart (2016)</span></div>`
+    : '';
+
   let t=`<thead><tr>
     <th>Perfil</th>
     <th style="color:#888780;">Sin tratamiento</th>
@@ -507,7 +531,8 @@ function calc(){
     t+=`<tr><td style="font-weight:500;">${p.label}<span class="src-tag">${p.src}</span></td>
       <td><span class="wrs-cell" style="${wStyle(vb)}">${vb}%</span></td>
       <td><span class="wrs-cell" style="${wStyle(vac)}">${vac}%</span>
-        <span style="font-size:11px;margin-left:4px;" class="${d>=5?'delta-good':d<0?'':'delta-neutral'}">${d>0?'+'+d+'pp':d===0?'sin cambio':d+'pp'}</span></td>
+        <span style="font-size:11px;margin-left:4px;" class="${d>=5?'delta-good':d<0?'':'delta-neutral'}">${d>0?'+'+d+'pp':d===0?'sin cambio':d+'pp'}</span>
+        ${p.id==='hipo'?igNota_hipo:''}</td>
       <td style="color:#888780;font-size:11px;">${p.umbral}</td></tr>`;
   });
 
@@ -519,7 +544,8 @@ function calc(){
         <span class="src-tag">${p.src}</span></td>
       <td><span class="wrs-cell" style="${wStyle(vb)}">${vb}%</span></td>
       <td><span class="wrs-cell" style="${wStyle(vac)}">${vac}%</span>
-        <span style="font-size:11px;margin-left:4px;" class="${d>=5?'delta-good':d<0?'':'delta-neutral'}">${d>0?'+'+d+'pp':d===0?'sin cambio':d+'pp'}</span></td>
+        <span style="font-size:11px;margin-left:4px;" class="${d>=5?'delta-good':d<0?'':'delta-neutral'}">${d>0?'+'+d+'pp':d===0?'sin cambio':d+'pp'}</span>
+        ${p.id==='ic'?igNota_ic:''}</td>
       <td style="color:#888780;font-size:11px;">${p.umbral}</td></tr>`;
   });
 
