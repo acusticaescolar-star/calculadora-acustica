@@ -720,6 +720,34 @@ function calc(){
 syncMaterial();
 syncTR();
 calc();
+
+// ── Autoajuste de altura al incrustarse en un iframe ────────────────
+// La altura varía mucho (≈2000 px en escritorio, ≈4000 px en móvil, y cambia
+// al aparecer o desaparecer los avisos). Informa de su alto a la página que la
+// embebe para que ajuste el iframe y no corte contenido ni deje huecos.
+(function(){
+  if(window.parent===window) return;          // no está incrustada
+  let ultimo=0;
+  function enviar(){
+    // OJO: scrollHeight no sirve aquí — dentro de un iframe nunca devuelve menos
+    // que la altura del propio iframe, de modo que informaría del valor que ya
+    // tiene y el ajuste no haría nada. El borde inferior de <body> sí da la
+    // altura real del contenido.
+    const h=Math.ceil(document.body.getBoundingClientRect().bottom)+8;  // +8: margen anti-recorte
+    if(Math.abs(h-ultimo)<8) return;          // evita bucles por redondeo
+    ultimo=h;
+    try{ window.parent.postMessage({tipo:'acusticaescolar:alto',alto:h},'*'); }catch(e){}
+  }
+  window.addEventListener('load',enviar);
+  window.addEventListener('resize',enviar);
+  if(window.ResizeObserver) new ResizeObserver(enviar).observe(document.body);
+  setTimeout(enviar,150); setTimeout(enviar,700);
+  // La página que nos embebe puede registrar su oyente después de que hayamos
+  // enviado (pasa cuando el iframe viene de caché). Si nos lo pide, repetimos.
+  window.addEventListener('message',function(ev){
+    if(ev.data && ev.data.tipo==='acusticaescolar:pide-alto'){ ultimo=0; enviar(); }
+  });
+})();
 </script>
 </body>
 </html>
