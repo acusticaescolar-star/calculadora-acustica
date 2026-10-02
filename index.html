@@ -132,9 +132,11 @@
     border-radius:var(--radius-sm); padding:4px 8px;
     display:inline-block; font-weight:500; font-size:12px; min-width:60px; text-align:center;
   }
-  .tope-mark {
-    font-size:9px; background:var(--c-amber-bg); color:#854F0B;
-    border-radius:3px; padding:1px 5px; margin-left:4px; font-weight:600;
+  /* Foco sobre el U50 cuando la tabla de comprensión está fuera de su dominio */
+  .ac-card.foco { border:1.5px solid var(--c-teal); box-shadow:0 0 0 3px var(--c-teal-bg); }
+  .foco-nota {
+    font-size:10px; color:#085041; background:var(--c-teal-bg); border-radius:3px;
+    padding:4px 7px; margin:7px 0 0; line-height:1.45;
   }
   .src-tag { font-size:10px; color:var(--c-text3); display:block; margin-top:1px; }
   .est-tag {
@@ -197,8 +199,8 @@
           Tiempo de reverberación — TR (s)
           <span class="tr-est-tag" id="tr-est-tag">estimado</span><button type="button" class="tr-recalc-tag" id="tr-recalc-btn" style="display:none;" title="Volver a vincular el TR a las dimensiones del aula">↻ volver al cálculo estimado</button>
         </span>
-        <input type="range" min="0.4" max="3.5" step="0.1" value="1.4" id="tr0">
-        <span class="ctrl-val" id="tr0-out">1,4 s</span>
+        <input type="range" min="0.4" max="3.5" step="0.1" value="1.3" id="tr0">
+        <span class="ctrl-val" id="tr0-out">1,3 s</span>
       </div>
       <p class="field-note">Valor estimado para un <strong>aula de clase convencional de los años 80</strong> (ladrillo enlucido, terrazo, forjado de hormigón) con mobiliario escolar duro estándar: pupitres, sillas, armario y pizarra. <strong>No válido</strong> para espacios con mobiliario blando, alfombras o paneles absorbentes (aulas del futuro, aulas taller, espacios de nueva construcción). En esos casos —y siempre que sea posible— mide el valor real con <strong>RoomEQ Wizard</strong> o <strong>RT Calculator</strong> en el móvil, con el aula vacía de alumnos.</p>
 
@@ -550,6 +552,17 @@ function calc(){
   wb['tea']=wrs_tea(tr0,snr_b); wac['tea']=wrs_tea(tr_ac,snr_ac);
 
   const topes_b=topesActivos(tr0,snr_b), topes_ac=topesActivos(tr_ac,snr_ac);
+  const enTope_b=topes_b.length>0, enTope_ac=topes_ac.length>0;
+
+  // Fuera del dominio de la tabla el porcentaje es un MÁXIMO, no una estimación,
+  // y la mejora calculada desde un máximo es un MÍNIMO. La cifra lo dice ella misma.
+  const pct=(v,tope)=>(tope?'\u2264\u00a0':'')+v+'%';
+  function deltaTxt(d,topeB,topeAc){
+    if(cob_t===0) return {txt:'sin cambio',cls:'delta-neutral'};
+    if(topeB&&topeAc) return {txt:'no cuantificable: mira el U50',cls:'delta-neutral'};
+    if(topeB) return {txt:'\u2265\u00a0'+(d>0?'+'+d:'0')+'\u00a0pp',cls:d>=5?'delta-good':'delta-neutral'};
+    return {txt:d>0?'+'+d+'\u00a0pp':(d===0?'sin cambio':d+'\u00a0pp'),cls:d>=5?'delta-good':(d<0?'':'delta-neutral')};
+  }
 
   const voz_b=calcVoz(rf_b), voz_ac=calcVoz(rf_ac);
   const dvoz=+(voz_ac-voz_b).toFixed(1);
@@ -569,10 +582,11 @@ function calc(){
       <p class="ac-val">${f1(c50_b)} → ${f1(c50_ac)} dB</p>
       <p class="ac-sub">objetivo ≥ 3 dB &nbsp;${c50Badge(c50_ac)}</p>
       <p class="ac-foot">Derivado solo del TR. <strong>No incluye el ruido de fondo</strong>: un buen C50 no garantiza inteligibilidad.</p></div>
-    <div class="ac-card"><p class="ac-label">U50 — sala + ruido</p>
+    <div class="ac-card${enTope_b?' foco':''}"><p class="ac-label">U50 — sala + ruido</p>
       <p class="ac-val">${f1(u50_b)} → ${f1(u50_ac)} dB</p>
       <p class="ac-sub">objetivo inclusivo ≥ 3 dB &nbsp;${u50Badge(u50_ac)}</p>
-      <p class="ac-foot">Relación útil-a-perjudicial (Bradley 1986). <strong>Es el indicador a mirar</strong> para fijar objetivos de inteligibilidad.</p></div>
+      <p class="ac-foot">Relación útil-a-perjudicial (Bradley 1986). <strong>Es el indicador a mirar</strong> para fijar objetivos de inteligibilidad.</p>
+      ${enTope_b?'<p class="foco-nota">Tu aula supera 1,2 s: la tabla de comprensión solo da un máximo. Este indicador sí responde al TR real.</p>':''}</div>
     <div class="ac-card"><p class="ac-label">Ruido de fondo, aula ocupada</p>
       <p class="ac-val">${f1(rf_b)} → ${f1(rf_ac)} dBA</p>
       <p class="ac-sub">con paneles −${f1(rf_b-rf_ac)} dBA</p>
@@ -596,6 +610,8 @@ function calc(){
   const w_d_b =interpFH('normal',tr0   ,snr_d_b );
   const w_d_ac=interpFH('normal',tr_ac ,snr_d_ac);
   const dSNR_d=snr_d_ac-snr_d_b, dW_d=rnd(w_d_ac)-rnd(w_d_b);
+  const tope_d_b=topesActivos(tr0,snr_d_b).length>0, tope_d_ac=topesActivos(tr_ac,snr_d_ac).length>0;
+  const delta_d=deltaTxt(dW_d,tope_d_b,tope_d_ac);
 
   const zona = dist<=1.5 ? 'primera fila' : (dist>=largo-2 ? 'fondo del aula' : 'zona central');
   const estiloSNR = dSNR_d < -0.05 ? 'color:#A32D2D;' : (dSNR_d>0.05?'color:#085041;':'color:var(--c-text2);');
@@ -604,7 +620,7 @@ function calc(){
     <div class="ac-card"><p class="ac-label">Distancia crítica</p>
       <p class="ac-val">${f1(rc_b)} → ${f1(rc_ac)} m</p>
       <p class="ac-sub">sin tratar → con paneles</p>
-      <p class="ac-foot">Más allá de esta distancia el alumno <strong>ya no oye al docente: oye la sala</strong>. Con ${f1(rc_b)} m, todos salvo la primera fila están en campo reverberante.</p></div>
+      <p class="ac-foot">Más allá de esta distancia, lo que llega de la voz del docente es <strong>sobre todo su reflejo en la sala</strong>, no la voz directa. Con ${f1(rc_b)} m, todos salvo la primera fila están en campo reverberante.</p></div>
     <div class="ac-card"><p class="ac-label">Voz que llega a ${f1(dist)} m</p>
       <p class="ac-val">${f1(voz_d_b)} → ${f1(voz_d_ac)} dBA</p>
       <p class="ac-sub">${f1(voz_d_ac-voz_d_b)} dB &nbsp;<span style="color:var(--c-text3);">· ${zona}</span></p>
@@ -616,28 +632,30 @@ function calc(){
         ? `A esta distancia la SNR <strong>empeora</strong>: el ruido baja ${f1(rf_b-rf_ac)} dB, pero la voz baja ${f1(voz_d_b-voz_d_ac)} dB.`
         : `A esta distancia el campo directo aún pesa y la SNR se mantiene o mejora.`}</p></div>
     <div class="ac-card"><p class="ac-label">Comprensión a ${f1(dist)} m</p>
-      <p class="ac-val">${rnd(w_d_b)}% → ${rnd(w_d_ac)}%</p>
-      <p class="ac-sub ${dW_d>=5?'delta-good':'delta-neutral'}">${dW_d>0?'+'+dW_d:dW_d} pp · normooyente</p>
+      <p class="ac-val">${pct(rnd(w_d_b),tope_d_b)} → ${pct(rnd(w_d_ac),tope_d_ac)}</p>
+      <p class="ac-sub ${delta_d.cls}">${delta_d.txt} · normooyente</p>
       <p class="ac-foot">Palabras monosilábicas aisladas. Comparar con la tabla inferior, que es el valor a 1 m.</p></div>`;
 
   // Síntesis del mecanismo: el hallazgo es que la mejora no viene de la SNR.
   let mecanismo='';
   if(cob_t>0 && dist>rc_b){
-    if(dSNR_d<-0.05 && dW_d>0){
-      mecanismo=`A <strong>${f1(dist)} m</strong> la relación señal-ruido <strong>empeora ${f1(Math.abs(dSNR_d))} dB</strong> y aun así la comprensión <strong>sube ${dW_d} puntos</strong>. No es una contradicción: a esta distancia la mejora <strong>no viene de oír más alto, viene de oír más claro</strong> — el TR cae de ${f1(tr0)} a ${f1(tr_ac)} s y con él la voz reverberada que enmascara a la propia voz. Para la mayoría de la clase, el beneficio del tratamiento es claridad, no nivel.`;
+    const alMenos = tope_d_b ? 'al menos ' : '';
+    if(tope_d_b && tope_d_ac){
+      mecanismo='';
+    } else if(dSNR_d<-0.05 && dW_d>0){
+      mecanismo=`A <strong>${f1(dist)} m</strong> la relación señal-ruido <strong>empeora ${f1(Math.abs(dSNR_d))} dB</strong> y aun así la comprensión <strong>sube ${alMenos}${dW_d} puntos</strong>. No es una contradicción: a esta distancia la mejora <strong>no viene de oír más alto, viene de oír más claro</strong> — el TR cae de ${f1(tr0)} a ${f1(tr_ac)} s y con él la voz reverberada que enmascara a la propia voz. Para la mayoría de la clase, el beneficio del tratamiento es claridad, no nivel.`;
     } else if(dW_d>0){
-      mecanismo=`A <strong>${f1(dist)} m</strong> la comprensión sube <strong>${dW_d} puntos</strong>, y la mayor parte de esa ganancia procede de la caída del TR (${f1(tr0)} → ${f1(tr_ac)} s), no del cambio de nivel.`;
+      mecanismo=`A <strong>${f1(dist)} m</strong> la comprensión sube <strong>${alMenos}${dW_d} puntos</strong>, y la mayor parte de esa ganancia procede de la caída del TR (${f1(tr0)} → ${f1(tr_ac)} s), no del cambio de nivel.`;
     }
   }
   document.getElementById('mecanismo-block').innerHTML =
     mecanismo ? `<div class="mecanismo">${mecanismo}</div>` : '';
 
-  // Aviso de acotación al dominio de la tabla
-  const avisos=[];
-  if(topes_b.length) avisos.push(`<strong>sin tratamiento</strong> (${topes_b.join(' · ')})`);
-  if(topes_ac.length) avisos.push(`<strong>con paneles</strong> (${topes_ac.join(' · ')})`);
-  document.getElementById('rango-aviso-block').innerHTML = avisos.length
-    ? `<div class="rango-aviso">Las condiciones de ${avisos.join(' y ')} caen <strong>fuera del rango de los datos experimentales</strong> de Finitzo-Hieber &amp; Tillman (TR hasta 1,2 s, SNR hasta 0 dB). La calculadora <strong>no extrapola</strong>: acota al límite de la tabla. Los porcentajes marcados con <span class="tope-mark">tope</span> son por tanto un <strong>techo</strong> — la comprensión real será menor, y la mejora real mayor que la mostrada.</div>`
+  // Aviso de dominio: qué significan ≤ y ≥, y qué indicador sí responde al TR real.
+  document.getElementById('rango-aviso-block').innerHTML = enTope_b
+    ? `<div class="rango-aviso">Con un TR de <strong>${f1(tr0)} s</strong> tu aula queda <strong>fuera del rango de los datos experimentales</strong> de comprensión: Finitzo-Hieber &amp; Tillman llegan hasta 1,2 s y la calculadora <strong>no extrapola</strong>. Por eso los porcentajes sin tratar llevan <strong>≤</strong>: son un <strong>máximo</strong>, y la comprensión real será menor. ${enTope_ac
+        ? `Con esta cobertura el aula tratada también supera 1,2 s (${f1(tr_ac)} s), así que la tabla <strong>no puede cuantificar la mejora</strong>, aunque la haya.`
+        : `Las mejoras llevan <strong>≥</strong>: son un <strong>mínimo</strong>, y la ganancia real será mayor.`} El indicador que sí responde al TR real de tu aula es el <strong>U50</strong>: ${f1(u50_b)} → ${f1(u50_ac)} dB.</div>`
     : '';
 
   const directos=[
@@ -663,12 +681,11 @@ function calc(){
     : '';
   const igNota_ic = tr_ac<=0.9
     ? `<div style="font-size:9.5px;color:#1E6458;margin-top:3px;line-height:1.4;border-left:2px solid #1E6458;padding-left:5px;">` +
-      `Valor conservador (IC analógico, 1978). ` +
+      `Valor conservador (implantes de principios de los 2000). ` +
       `Los IC modernos mejoran significativamente al reducir el TR; con TR ≤ 0,3 s alcanzan ≥80 % en frases. ` +
       `<span style="color:#888780;">Iglehart (2016)</span></div>`
     : '';
 
-  const marcaTope = t => t.length ? '<span class="tope-mark" title="Valor acotado al límite de la tabla — es un techo">tope</span>' : '';
 
   let t=`<thead><tr>
     <th>Perfil</th>
@@ -681,22 +698,22 @@ function calc(){
   directos.forEach(p=>{
     const vb=rnd(wb[p.id]),vac=rnd(wac[p.id]),d=vac-vb;
     t+=`<tr><td style="font-weight:500;">${p.label}<span class="src-tag">${p.src}</span></td>
-      <td><span class="wrs-cell" style="${wStyle(vb)}">${vb}%</span>${marcaTope(topes_b)}</td>
-      <td><span class="wrs-cell" style="${wStyle(vac)}">${vac}%</span>${marcaTope(topes_ac)}
-        <span style="font-size:11px;margin-left:4px;" class="${d>=5?'delta-good':d<0?'':'delta-neutral'}">${d>0?'+'+d+'pp':d===0?'sin cambio':d+'pp'}</span>
+      <td><span class="wrs-cell" style="${wStyle(vb)}" title="${enTope_b?'Máximo: el aula supera el rango de la tabla (1,2 s)':''}">${pct(vb,enTope_b)}</span></td>
+      <td><span class="wrs-cell" style="${wStyle(vac)}" title="${enTope_ac?'Máximo: el aula supera el rango de la tabla (1,2 s)':''}">${pct(vac,enTope_ac)}</span>
+        <span style="font-size:11px;margin-left:4px;" class="${deltaTxt(d,enTope_b,enTope_ac).cls}">${deltaTxt(d,enTope_b,enTope_ac).txt}</span>
         ${p.id==='hipo'?igNota_hipo:''}</td>
       <td style="color:#888780;font-size:11px;">${p.umbral}</td></tr>`;
   });
 
-  t+=`<tr class="sep-row"><td colspan="4">Alumnado — estimados por penalización de SNR documentada</td></tr>`;
+  t+=`<tr class="sep-row"><td colspan="4">Alumnado — perfiles estimados · TEA: penalización de SNR · implante coclear: tabla derivada</td></tr>`;
   estimados.forEach(p=>{
     const vb=rnd(wb[p.id]),vac=rnd(wac[p.id]),d=vac-vb;
     t+=`<tr style="background:${p.bg};">
       <td style="font-weight:500;">${p.label}${p.badge}<span class="est-tag">estimado</span>
         <span class="src-tag">${p.src}</span></td>
-      <td><span class="wrs-cell" style="${wStyle(vb)}">${vb}%</span>${marcaTope(topes_b)}</td>
-      <td><span class="wrs-cell" style="${wStyle(vac)}">${vac}%</span>${marcaTope(topes_ac)}
-        <span style="font-size:11px;margin-left:4px;" class="${d>=5?'delta-good':d<0?'':'delta-neutral'}">${d>0?'+'+d+'pp':d===0?'sin cambio':d+'pp'}</span>
+      <td><span class="wrs-cell" style="${wStyle(vb)}" title="${enTope_b?'Máximo: el aula supera el rango de la tabla (1,2 s)':''}">${pct(vb,enTope_b)}</span></td>
+      <td><span class="wrs-cell" style="${wStyle(vac)}" title="${enTope_ac?'Máximo: el aula supera el rango de la tabla (1,2 s)':''}">${pct(vac,enTope_ac)}</span>
+        <span style="font-size:11px;margin-left:4px;" class="${deltaTxt(d,enTope_b,enTope_ac).cls}">${deltaTxt(d,enTope_b,enTope_ac).txt}</span>
         ${p.id==='ic'?igNota_ic:''}</td>
       <td style="color:#888780;font-size:11px;">${p.umbral}</td></tr>`;
   });
