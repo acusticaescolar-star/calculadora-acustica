@@ -680,14 +680,14 @@ function calc(){
     : '';
 
   const directos=[
-    {id:'normal',label:'Normooyente',               umbral:'≥ 60%',src:'Finitzo-Hieber &amp; Tillman (1978)'},
-    {id:'hipo',  label:'Hipoacusia (con audífono)',umbral:'≥ 55%',src:'Finitzo-Hieber &amp; Tillman (1978)'},
+    {id:'normal',label:'Normooyente',               src:'Finitzo-Hieber &amp; Tillman (1978)'},
+    {id:'hipo',  label:'Hipoacusia (con audífono)',src:'Finitzo-Hieber &amp; Tillman (1978)'},
   ];
   const estimados=[
-    {id:'tea',label:'TEA / Asperger',   umbral:'≥ 55%',bg:'#FFFBEB',
+    {id:'tea',label:'TEA / Asperger',   bg:'#FFFBEB',
      badge:'<span style="font-size:9px;background:#FEF3C7;color:#92400E;border-radius:3px;padding:1px 5px;margin-left:4px;font-weight:500;">TEA</span>',
      src:'Alcántara et al. (2004) — penalización SNR −2,5 dB en ruido babble · transposición desde adultos y desde umbral SRT'},
-    {id:'ic', label:'Implante coclear',  umbral:'≥ 50%',bg:'#FAFAFF',
+    {id:'ic', label:'Implante coclear',  bg:'#FAFAFF',
      badge:'<span style="font-size:9px;background:#F3E8FF;color:#5B21B6;border-radius:3px;padding:1px 5px;margin-left:4px;font-weight:500;">IC</span>',
      src:'Iglehart (2016) — penalización de SNR de 12 a 15 dB según el TR · transposición desde frases (SNR-50)'},
   ];
@@ -720,21 +720,19 @@ function calc(){
     <th>Perfil</th>
     <th style="color:#888780;">Sin tratamiento</th>
     <th style="color:#534AB7;">Con paneles en techo<br><span style="font-weight:400;font-size:10px;">${rnd(cob_t*100)}% cobertura · α ${alphaPanel.toFixed(2).replace('.',',')} · TR conservador ${f1(tr_ac)} s</span></th>
-    <th>Umbral funcional</th>
   </tr></thead><tbody>`;
 
-  t+=`<tr class="sep-row"><td colspan="4">Alumnado — datos directos (Finitzo-Hieber &amp; Tillman, 1978) · palabras monosilábicas aisladas</td></tr>`;
+  t+=`<tr class="sep-row"><td colspan="3">Alumnado — datos directos (Finitzo-Hieber &amp; Tillman, 1978) · palabras monosilábicas aisladas</td></tr>`;
   directos.forEach(p=>{
     const vb=rnd(wb[p.id]),vac=rnd(wac[p.id]),d=vac-vb;
     t+=`<tr><td style="font-weight:500;">${p.label}<span class="src-tag">${p.src}</span></td>
       <td><span class="wrs-cell" style="${wStyle(vb)}" title="${enTope_b?'Máximo: el aula supera el rango de la tabla (1,2 s)':''}">${pct(vb,enTope_b)}</span></td>
       <td><span class="wrs-cell" style="${wStyle(vac)}" title="${enTope_ac?'Máximo: el aula supera el rango de la tabla (1,2 s)':''}">${pct(vac,enTope_ac)}</span>
         <span style="font-size:11px;margin-left:4px;" class="${deltaTxt(d,enTope_b,enTope_ac).cls}">${deltaTxt(d,enTope_b,enTope_ac).txt}</span>
-        ${p.id==='hipo'?igNota_hipo:''}</td>
-      <td style="color:#888780;font-size:11px;">${p.umbral}</td></tr>`;
+        ${p.id==='hipo'?igNota_hipo:''}</td></tr>`;
   });
 
-  t+=`<tr class="sep-row"><td colspan="4">Alumnado — perfiles estimados · penalización de SNR sobre la tabla de normooyentes</td></tr>`;
+  t+=`<tr class="sep-row"><td colspan="3">Alumnado — perfiles estimados · penalización de SNR sobre la tabla de normooyentes</td></tr>`;
   estimados.forEach(p=>{
     const vb=rnd(wb[p.id]),vac=rnd(wac[p.id]),d=vac-vb;
     // Cada perfil estimado tiene sus propios límites de datos (ver topePerfil).
@@ -747,11 +745,10 @@ function calc(){
       <td><span class="wrs-cell" style="${wStyle(vb)}" title="${tit(tB,enTope_b)}">${pct(vb,tB)}</span></td>
       <td><span class="wrs-cell" style="${wStyle(vac)}" title="${tit(tA,enTope_ac)}">${pct(vac,tA)}</span>
         <span style="font-size:11px;margin-left:4px;" class="${dt.cls}">${dt.txt}</span>
-        ${p.id==='ic'?notaIC:''}</td>
-      <td style="color:#888780;font-size:11px;">${p.umbral}</td></tr>`;
+        ${p.id==='ic'?notaIC:''}</td></tr>`;
   });
 
-  t+=`<tr class="sep-row"><td colspan="4">Docente — nivel de carga vocal (dBA)</td></tr>`;
+  t+=`<tr class="sep-row"><td colspan="3">Docente — nivel de carga vocal (dBA)</td></tr>`;
   t+=`<tr style="background:#FFFBEB;">
     <td style="font-weight:500;">Docente
       <span style="font-size:9px;background:#FEF3C7;color:#92400E;border-radius:3px;padding:1px 5px;margin-left:4px;font-weight:500;">voz</span>
@@ -759,8 +756,7 @@ function calc(){
     <td><span class="vocal-cell" style="${vStyle(voz_b)}">${f1(voz_b)} dBA</span></td>
     <td><span class="vocal-cell" style="${vStyle(voz_ac)}">${f1(voz_ac)} dBA</span>
       <span style="font-size:11px;margin-left:4px;" class="${dvoz<=-0.5?'delta-good':'delta-neutral'}">${dvoz>=0?'+':''}${f1(dvoz)} dB</span>
-      ${dvoz<=-0.5?'<br>'+logNote(dvoz):''}</td>
-    <td style="color:#888780;font-size:11px;">&lt; 65 dBA</td></tr>`;
+      ${dvoz<=-0.5?'<br>'+logNote(dvoz):''}</td></tr>`;
 
   t+='</tbody>';
   document.getElementById('main-table').innerHTML=t;
